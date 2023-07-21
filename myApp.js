@@ -31,21 +31,30 @@ const createAndSavePerson = (done) => {
 
 const createManyPeople = (arrayOfPeople, done) => {
   Person.create(arrayOfPeople, function(error, people) {
-    if (error) return console.log(error);
+    if (error) return console.error(error);
     done(null, people);
   });
 };
 
 const findPeopleByName = (personName, done) => {
-  done(null /*, data*/);
+  Person.find({name: personName}, function(error, people) {
+    if (error) return console.error(error)
+    done(null ,people);
+  });
 };
 
 const findOneByFood = (food, done) => {
-  done(null /*, data*/);
+  Person.findOne({favoriteFoods: [food]}, function(error, person) {
+    if (error) return console.error(error)
+    done(null, person);
+  });
 };
 
 const findPersonById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findById({_id:personId}, function(error, person) {
+    if (error) return console.error(error)
+    done(null, person);
+  });
 };
 
 const findEditThenSave = (personId, done) => {
