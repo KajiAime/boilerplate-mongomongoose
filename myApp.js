@@ -1,8 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-
 const myURI = process.env.MONGO_URI;
-mongoose.connect(myURI, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(myURI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
 let Person;
 
@@ -38,21 +37,21 @@ const createManyPeople = (arrayOfPeople, done) => {
 
 const findPeopleByName = (personName, done) => {
   Person.find({name: personName}, function(error, people) {
-    if (error) return console.error(error)
+    if (error) return console.error(error);
     done(null ,people);
   });
 };
 
 const findOneByFood = (food, done) => {
   Person.findOne({favoriteFoods: [food]}, function(error, person) {
-    if (error) return console.error(error)
+    if (error) return console.error(error);
     done(null, person);
   });
 };
 
 const findPersonById = (personId, done) => {
   Person.findById({_id:personId}, function(error, person) {
-    if (error) return console.error(error)
+    if (error) return console.error(error);
     done(null, person);
   });
 };
@@ -60,10 +59,10 @@ const findPersonById = (personId, done) => {
 const findEditThenSave = (personId, done) => {
   const foodToAdd = "hamburger";
   Person.findById(personId, function(error, person) {
-    if (error) return console.error(error)
+    if (error) return console.error(error);
     person.favoriteFoods.push(foodToAdd);
     person.save(function(err, data) {
-      if (err) return console.error(err)
+      if (err) return console.error(err);
       done(null, data);
     });
   });
@@ -71,12 +70,17 @@ const findEditThenSave = (personId, done) => {
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
-
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name: personName}, {age: ageToSet},{new: true}, (error, document) => {
+    if (error) return console.error(error);
+    done(null, document);
+  });
 };
 
 const removeById = (personId, done) => {
-  done(null /*, data*/);
+  Person.findByIdAndRemove(personId, (error, rmvperson) => {
+    if (error) return console.error(error);
+    done(null, rmvperson);
+  });
 };
 
 const removeManyPeople = (done) => {
