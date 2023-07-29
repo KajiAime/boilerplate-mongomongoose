@@ -85,14 +85,22 @@ const removeById = (personId, done) => {
 
 const removeManyPeople = (done) => {
   const nameToRemove = "Mary";
-
-  done(null /*, data*/);
+  Person.remove({name: nameToRemove}, (error, rmvpeople) => {
+    if (error) return console.error(error);
+    done(null, rmvpeople);
+  });
 };
 
 const queryChain = (done) => {
   const foodToSearch = "burrito";
-
-  done(null /*, data*/);
+  Person.find({favoriteFoods:foodToSearch})
+        .sort({name: 1})
+        .limit(2)
+        .select({age: 0})
+        .exec(function(error, results) {
+          if (error) return console.error(error);
+          done(null, results);
+        });
 };
 
 /** **Well Done !!**
